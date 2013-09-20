@@ -13,12 +13,12 @@
     }
   ],
   "require": {
-    "php": ">=5.2",
+    "php": ">=5.3.1",
     "ext-curl": "*",
-    "ext-json": "*",
     "ext-mbstring": "*"
   },
   "autoload": {
-    "classmap": ["lib/Elements/", "lib/Elements.php"]
+    "files": "lib/Elements.php",
+    "classmap": ["lib/Elements/"]
   }
 }
