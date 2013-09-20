@@ -1,9 +1,10 @@
 <?php
 
+use Elements\ElementsException;
 
 abstract class Elements {
 
-	public static $baseUrl = "https://api.lgelements.com"
+	public static $baseUrl = "https://api.lgelements.com";
 
 	public static $partnerId;
 
@@ -13,7 +14,7 @@ abstract class Elements {
 
 	public static $useSignatureAuth = false;
 
-	private static $signature;
+	public static $signature;
 
 	const VERSION = 'v2';
 
@@ -49,12 +50,12 @@ abstract class Elements {
 		return self::$appFamilyId;
 	}
 
-	public static generateSignature($secret, $partnerId = null, $appFamilyId = null) {
-		if (!$partnerId) {
+	public static function generateSignature($secret, $partnerId = null, $appFamilyId = null) {
+		if (isset($partnerId)) {
 			self::setPartnerId($partnerId);
 		}
 
-		if (!$appFamilyId) {
+		if (isset($appFamilyId)) {
 			self::setAppFamilyId($appFamilyId);
 		}
 
@@ -66,9 +67,12 @@ abstract class Elements {
 			throw new ElementsException('You must first set the App Family ID to generate a signature');
 		}
 
+		self::$useSignatureAuth = true;
+
 		$string = self::getPartnerId() . self::getAppFamilyId() . gmmktime();
 
-		return self::$signature = hash_hmac("sha256", $string, $secret);
+		self::$signature = hash_hmac("sha256", $string, $secret);
+		return self::$signature;
 	}
 
 }

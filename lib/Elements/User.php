@@ -2,96 +2,191 @@
 
 namespace Elements;
 
-
 class User extends AbstractApiHandler {
 
-	public function addUser($params = null, $apiKey = null) {
-		return self::getCall('user', $params, $apiKey);
+	public static function addUser($params = null, $apiAuth = null) {
+		return self::postCall('user', $params, $apiAuth);
 	}
 
-	public function findUserById() {
-
+	public static function findUserById($id, $params = null, $apiAuth = null) {
+		$params['id'] = $id;
+		return self::retrieveCall($params, $apiAuth);
 	}
 
-	public function findUserByExternalKey() {
-
+	public static function findUserByExternalKey($params = null, $apiAuth = null) {
+		$base = self::name();
+		return self::getCall($base, $params, $apiAuth);
 	}
 
-	public function updateUserById() {
-
+	public static function updateUserById($params = null, $apiAuth = null) {
+		$class = self::className();
+		$instance = new $class($params);
+		$url = $instance->getInstanceUrl();
+		$processor = new ApiProcessor($apiAuth);
+		list($response, $code) = $processor->request('put', $url, $params); 
+		return self::processResponse($response);
 	}
 
-	public function updateUserByExternalKey() {
-
+	public static function updateUserByExternalKey($params = null, $apiAuth = null) {
+		$class = self::className();
+		$instance = new $class($params);
+		$url = $instance->getInstanceUrl();
+		$processor = new ApiProcessor($apiAuth);
+		list($response, $code) = $processor->request('put', $url, $params); 
+		return self::processResponse($response);
 	}
 
-	public function setUserProperty() {
-
+	public static function setUserProperty($params = null, $apiAuth = null) {
+		$class = self::className();
+		$instance = new $class($params);
+		$url = $instance->getInstanceUrl(). '/properties';
+		$processor = new ApiProcessor($apiAuth);
+		list($response, $code) = $processor->request('put', $url, $params); 
+		return self::processResponse($response);	
 	}
 
-	public function addUserTag() {
-
+	public static function addUserTag($params = null, $apiAuth = null) {
+		$class = self::className();
+		$instance = new $class($params);
+		$url = $instance->getInstanceUrl(). '/tags';
+		$processor = new ApiProcessor($apiAuth);
+		list($response, $code) = $processor->request('put', $url, $params); 
+		return self::processResponse($response);
 	}
 
-	public function deleteUserTag() {
-
+	public static function deleteUserTag($params = null, $apiAuth = null) {
+		$class = self::className();
+		$instance = new $class($params);
+		$url = $instance->getInstanceUrl(). '/tags';
+		$processor = new ApiProcessor($apiAuth);
+		list($response, $code) = $processor->request('delete', $url, $params); 
+		return self::processResponse($response);	
 	}
 
-	public function findUserEmail() {
-
+	public static function findUserEmail($params = null, $apiAuth = null) {
+		$class = self::className();
+		$instance = new $class($params);
+		$url = $instance->getInstanceUrl(). '/emailAddresses';
+		$processor = new ApiProcessor($apiAuth);
+		list($response, $code) = $processor->request('get', $url, $params); 
+		return self::processResponse($response);	
 	}
 
-	public function addUserEmail() {
-
+	public static function addUserEmail($params = null, $apiAuth = null) {
+		$class = self::className();
+		$instance = new $class($params);
+		$url = $instance->getInstanceUrl(). '/emailAddress';
+		$processor = new ApiProcessor($apiAuth);
+		list($response, $code) = $processor->request('post', $url, $params); 
+		return self::processResponse($response);	
 	}
 
-	public function updateUserEmail() {
-
+	public static function updateUserEmail($params = null, $apiAuth = null) {
+		$class = self::className();
+		$instance = new $class($params);
+		if (!$instance->emailId) {
+			throw new ElementsException(sprintf('Could not create URL for %s. No emailId found for object', $class));
+		}
+		$url = $instance->getInstanceUrl(). '/emailAddress/'.$instance->emailId;
+		$processor = new ApiProcessor($apiAuth);
+		list($response, $code) = $processor->request('put', $url, $params); 
+		return self::processResponse($response);	
 	}
 
-	public function deleteUserEmail() {
-
+	public static function deleteUserEmail($params = null, $apiAuth = null) {
+		$class = self::className();
+		$instance = new $class($params);
+		if (!$instance->emailId) {
+			throw new ElementsException(sprintf('Could not create URL for %s. No emailId found for object', $class));
+		}
+		$url = $instance->getInstanceUrl(). '/emailAddress/'.$instance->emailId;
+		$processor = new ApiProcessor($apiAuth);
+		list($response, $code) = $processor->request('delete', $url, $params); 
+		return self::processResponse($response);
 	}
 
-	public function getUsers($params = null, $apiKey = null) {
-		return self::getCall('users', $params, $apiKey);
+	public static function getUsers($params = null, $apiAuth = null) {
+		return self::getCall('users', $params, $apiAuth);
 	}
 
-	public function getFinancialSummaries() {
-
+	public static function getFinancialSummaries($params = null, $apiAuth = null) {
+		$class = self::className();
+		$instance = new $class($params);
+		$url = $instance->getInstanceUrl(). '/financialSummaries';
+		$processor = new ApiProcessor($apiAuth);
+		list($response, $code) = $processor->request('get', $url, $params); 
+		return self::processResponse($response);
 	}
 
-	public function getItemInstances() {
-
+	public static function getItemInstances($params = null, $apiAuth = null) {
+		$class = self::className();
+		$instance = new $class($params);
+		$url = $instance->getInstanceUrl(). '/itemInstances';
+		$processor = new ApiProcessor($apiAuth);
+		list($response, $code) = $processor->request('get', $url, $params); 
+		return self::processResponse($response);
 	}
 
-	public function getRecommendations() {
-
+	public static function getRecommendations($params = null, $apiAuth = null) {
+		$class = self::className();
+		$instance = new $class($params);
+		$url = $instance->getInstanceUrl(). '/recommendations';
+		$processor = new ApiProcessor($apiAuth);
+		list($response, $code) = $processor->request('get', $url, $params); 
+		return self::processResponse($response);	
 	}
 
-	public function getRestrictions() {
-
+	public static function getRestrictions($params = null, $apiAuth = null) {
+		$class = self::className();
+		$instance = new $class($params);
+		$url = $instance->getInstanceUrl(). '/restrictions';
+		$processor = new ApiProcessor($apiAuth);
+		list($response, $code) = $processor->request('get', $url, $params); 
+		return self::processResponse($response);	
 	}
 
-	public function createSecureKey() {
-
+	public static function createSecureKey($params = null, $apiAuth = null) {
+		return self::postCall('user/secureKey', $params, $apiAuth);
 	}
 
-	public function blockUser() {
-
+	public static function blockUser($params = null, $apiAuth = null) {
+		$class = self::className();
+		$instance = new $class($params);
+		$url = $instance->getInstanceUrl(). '/block';
+		$processor = new ApiProcessor($apiAuth);
+		list($response, $code) = $processor->request('post', $url, $params); 
+		return self::processResponse($response);	
 	}
 
-	public function getBlock() {
-
+	public static function getBlock($params = null, $apiAuth = null) {
+		$class = self::className();
+		$instance = new $class($params);
+		$url = $instance->getInstanceUrl(). '/block';
+		$processor = new ApiProcessor($apiAuth);
+		list($response, $code) = $processor->request('get', $url, $params); 
+		return self::processResponse($response);	
 	}
 
-	public function unblockUser() {
-
+	public static function unblockUser($params = null, $apiAuth = null) {
+		$class = self::className();
+		$instance = new $class($params);
+		$url = $instance->getInstanceUrl(). '/block';
+		$processor = new ApiProcessor($apiAuth);
+		list($response, $code) = $processor->request('delete', $url, $params); 
+		return self::processResponse($response);	
 	}
 
-	public function setUserLoginTime() {
-
+	public static function setUserLoginTimeById($params = null, $apiAuth = null) {
+		$class = self::className();
+		$instance = new $class($params);
+		$url = $instance->getInstanceUrl(). '/login';
+		$processor = new ApiProcessor($apiAuth);
+		list($response, $code) = $processor->request('post', $url, $params); 
+		return self::processResponse($response);	
 	}
 
-
+	public static function setUserLoginTimeByExternalKey($params = null, $apiAuth = null) {
+		$base = self::name();
+		return self::postCall('user/login', $params, $apiAuth);	
+	}
 }

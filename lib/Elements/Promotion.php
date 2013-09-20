@@ -2,6 +2,6 @@
 
 namespace Elements;
 
-class Promotion extends ElementsApi {
+class Promotion extends AbstractApiHandler {
 	
 }

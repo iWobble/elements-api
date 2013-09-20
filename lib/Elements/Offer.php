@@ -2,6 +2,6 @@
 
 namespace Elements;
 
-class Offer extends ElementsApi {
+class Offer extends AbstractApiHandler {
 	
 }

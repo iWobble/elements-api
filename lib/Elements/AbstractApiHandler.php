@@ -2,55 +2,101 @@
 
 namespace Elements;
 
-abstract class AbstractApiHandler {
+abstract class AbstractApiHandler extends Util\Object{
 
-	public function getBaseUrl($base = null) {
+
+
+	public static function name($class = null) {
+		if (!$class) {
+			$class = self::className();
+		}
+		if (strrchr($class, '\\')) {
+			$class = substr(strrchr($class,'\\'), 1);
+		}
+		return $class;
+	}
+
+	public static function className() {
+		return get_called_class();
+	}
+
+	public function getInstanceUrl($base = null) {
+		$id = $this->id;
+		if (!$id) {
+			throw new ElementsException(sprintf('Could not create URL for %s. No ID found for object', get_class($this)));
+		}
+		if (isset($base)) {
+			$base = lcfirst($base);
+			return self::getBaseUrl($base."/".$id);
+		}
+		return self::getBaseUrl(self::name(self::className())."/".$id);
+	}
+
+	public static function getBaseUrl($base = null) {
 		if (!$base) {
 			throw new ElementsException('No name found for this Elements API call.');
 		}
-		return "https://sharapova.lgelements.com/tfel2rs/v2/" . strtolower($base);
+		return lcfirst($base);
 	}
 
-	private static function validate($method, $params=null, $apiKey=null) {
+	protected function processResponse($response) {
+		try {
+			return Util\Xml::toArray(Util\Xml::build($response));
+		} catch (\Elements\Util\XmlException $e) {
+			throw new ElementsException($e->getMessage());
+		}
+	}
+
+	private static function validate($method, $params=null, $apiAuth=null) {
 		if (isset($params) && !is_array($params)) {
 			throw new ElementsException('You must pass an array as the first argument to the Elements API call');
 		}
-		if (isset($apiKey) && !is_string($apiKey)) {
-			throw new ElementsException('');
+		if (isset($apiAuth) && !is_array($apiAuth)) {
+			throw new ElementsException('You must pass an array of authentication parameters');
 		}
 	}
 
-	protected function postCall($class, $params = null, $apiKey = null) {
-		self::validate('post', $params, $apiKey);
-		$processor = new ApiProcessor($apiKey);
-		$url = self::getBaseUrl($class);
-		list($response, $code) = $processor->request('post', $url, $params);
-		return Util\Xml::toArray($response);
+	protected function retrieveCall($params, $apiAuth = null) {
+		$class = self::className();
+		$instance = new $class($params);
+		$url = $instance->getInstanceUrl();
+		$processor = new ApiProcessor($apiAuth);
+		list($response, $code) = $processor->request('get', $url, $params); 
+		return self::processResponse($response);
 	}
 
-	protected function getCall($class, $params = null, $apiKey = null) {
-		self::validate('get', $params, $apiKey);
-		$processor = new ApiProcessor($apiKey);
+	protected function postCall($class, $params = null, $apiAuth = null) {
+		self::validate('post', $params, $apiAuth);
+		$processor = new ApiProcessor($apiAuth);
+		$url = self::getBaseUrl($class);
+		list($response, $code) = $processor->request('post', $url, $params); 
+		return self::processResponse($response);
+	}
+
+	protected function getCall($class, $params = null, $apiAuth = null) {
+		self::validate('get', $params, $apiAuth);
+		$processor = new ApiProcessor($apiAuth);
 		$url = self::getBaseUrl($class);
 		list($response, $code) = $processor->request('get', $url, $params);
-		$response = Util\Xml::build($response, 'simplexmlelement');
-		return Util\Xml::toArray($response);
+		return self::processResponse($response);
 	}
 
-	protected function deleteCall($class, $params = null, $apiKey = null) {
-		self::validate('delete', $params, $apiKey);
-		$processor = new ApiProcessor($apiKey);
+	protected function deleteCall($class, $params = null, $apiAuth = null) {
+		self::validate('delete', $params, $apiAuth);
+		$processor = new ApiProcessor($apiAuth);
 		$url = self::getBaseUrl($class);
-		list($response, $code) = $processor->request('delete', $url, $params);
-		return Util\Xml::toArray($response);
+		list($response, $code) = $processor->request('delete', $url, $params); 
+		return self::processResponse($response);
 	}
 
-	protected function putCall($class, $params = null, $apiKey = null) {
-		self::validate('put', $params, $apiKey);
-		$processor = new ApiProcessor($apiKey);
-		$url = self::getBaseUrl($class);
-		list($response, $code) = $processor->request('put', $url, $params);
-		return Util\Xml::toArray($response);
+	protected function putCall($class, $params = null, $apiAuth = null) {
+		self::validate('put', $params, $apiAuth);
+		$class = self::className();
+		$instance = new $class($params);
+		$url = $instance->getInstanceUrl();
+		$processor = new ApiProcessor($apiAuth);
+		list($response, $code) = $processor->request('put', $url, $params); 
+		return self::processResponse($response);	
 	}
 
 

@@ -2,6 +2,6 @@
 
 namespace Elements;
 
-class Admin extends ElementsApi {
+class Admin extends AbstractApiHandler {
 	
 }

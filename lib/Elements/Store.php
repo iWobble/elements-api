@@ -2,6 +2,6 @@
 
 namespace Elements;
 
-class Store extends ElementsApi {
+class Store extends AbstractApiHandler {
 	
 }
