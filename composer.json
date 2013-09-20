@@ -18,7 +18,7 @@
     "ext-mbstring": "*"
   },
   "autoload": {
-    "files": "lib/Elements.php",
+    "files": ["lib/Elements.php"],
     "classmap": ["lib/Elements/"]
   }
 }
