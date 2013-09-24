@@ -138,9 +138,10 @@ class ApiProcessor  {
 			$options[CURLOPT_POSTFIELDS] = self::encode($params);
 		} elseif ($method == 'delete') {
 			$options[CURLOPT_CUSTOMREQUEST] = 'DELETE';
+			$url .="?$authStr";
 			if (count($params) > 0) {
 				$encoded = self::encode($params);
-				$url = "$url?$authStr&$encoded";
+				$url = "$url&$encoded";
 			}
 		} else {
 			throw new ElementsException('Unrecognized method %method');

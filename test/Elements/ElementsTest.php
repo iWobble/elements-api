@@ -9,4 +9,13 @@ abstract class ElementsTest extends UnitTestCase {
 		\Elements::setAccessKey('HPPhSwLraz');
 	}
 
+	protected static function randomString() {
+		$chars = "abcdefghijklmnopqrstuvwxyz";
+		$str = "";
+		for ($i = 0; $i < 10; $i++) {
+			$str .= $chars[rand(0, strlen($chars)-1)];
+		}
+		return $str;
+	}
+
 }

@@ -47,7 +47,9 @@ abstract class AbstractApiHandler extends Util\Object{
 			if (!empty($xmlArray['error'])) {
 				throw new ElementsException($xmlArray['error']['message'], $xmlArray['error']['code']);
 			}
-			return $xmlArray;
+			$class = self::className();
+			$instance = new $class($xmlArray);
+			return $instance;
 		} catch (\Elements\Util\XmlException $e) {
 			throw new ElementsException($e->getMessage());
 		}
