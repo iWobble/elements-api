@@ -8,6 +8,10 @@ class User extends AbstractApiHandler {
 		return self::postCall('user', $params, $apiAuth);
 	}
 
+	public static function findUsers($params = null, $apiAuth = null) {
+		return self::getCall('users', $params, $apiAuth);
+	}
+
 	public static function findUserById($id, $params = null, $apiAuth = null) {
 		$params['id'] = $id;
 		return self::retrieveCall($params, $apiAuth);
@@ -20,13 +24,13 @@ class User extends AbstractApiHandler {
 	}
 
 	public static function updateUserById($id, $params = null, $apiAuth = null) {
-		$parmas['id'] = $id;
-		
-		// $instance = new $class($params);
-		// $url = $instance->getInstanceUrl();
-		// $processor = new ApiProcessor($apiAuth);
-		// list($response, $code) = $processor->request('put', $url, $params); 
-		// return self::processResponse($response);
+		$params['id'] = $id;
+		$class = self::className();
+		$instance = new $class($params);
+		$url = $instance->getInstanceUrl();
+		$processor = new ApiProcessor($apiAuth);
+		list($response, $code) = $processor->request('put', $url, $params); 
+		return self::processResponse($response);
 	}
 
 	public static function updateUserByExternalKey($id, $params = null, $apiAuth = null) {
@@ -37,16 +41,17 @@ class User extends AbstractApiHandler {
 		return self::processResponse($response);
 	}
 
-	public static function setUserProperty($params = null, $apiAuth = null) {
+	public static function addUserProperty($id, $params = null, $apiAuth = null) {
 		$class = self::className();
-		$instance = new $class($params);
+		$instance = new $class(array('id' => $id));
 		$url = $instance->getInstanceUrl(). '/properties';
 		$processor = new ApiProcessor($apiAuth);
 		list($response, $code) = $processor->request('put', $url, $params); 
 		return self::processResponse($response);	
 	}
 
-	public static function addUserTag($params = null, $apiAuth = null) {
+	public static function addUserTag($id, $params = null, $apiAuth = null) {
+		$params['id'] = $id;	
 		$class = self::className();
 		$instance = new $class($params);
 		$url = $instance->getInstanceUrl(). '/tags';
@@ -55,7 +60,8 @@ class User extends AbstractApiHandler {
 		return self::processResponse($response);
 	}
 
-	public static function deleteUserTag($params = null, $apiAuth = null) {
+	public static function deleteUserTag($id, $params = null, $apiAuth = null) {
+		$params['id'] = $id;
 		$class = self::className();
 		$instance = new $class($params);
 		$url = $instance->getInstanceUrl(). '/tags';
@@ -64,7 +70,8 @@ class User extends AbstractApiHandler {
 		return self::processResponse($response);	
 	}
 
-	public static function findUserEmail($params = null, $apiAuth = null) {
+	public static function findUserEmail($id, $params = null, $apiAuth = null) {
+		$params['id'] = $id;
 		$class = self::className();
 		$instance = new $class($params);
 		$url = $instance->getInstanceUrl(). '/emailAddresses';
@@ -73,7 +80,8 @@ class User extends AbstractApiHandler {
 		return self::processResponse($response);	
 	}
 
-	public static function addUserEmail($params = null, $apiAuth = null) {
+	public static function addUserEmail($id, $params = null, $apiAuth = null) {
+		$params['id'] = $id;
 		$class = self::className();
 		$instance = new $class($params);
 		$url = $instance->getInstanceUrl(). '/emailAddress';
@@ -82,7 +90,8 @@ class User extends AbstractApiHandler {
 		return self::processResponse($response);	
 	}
 
-	public static function updateUserEmail($params = null, $apiAuth = null) {
+	public static function updateUserEmail($id, $params = null, $apiAuth = null) {
+		$params['id'] = $id;
 		$class = self::className();
 		$instance = new $class($params);
 		if (!$instance->emailId) {
@@ -94,7 +103,8 @@ class User extends AbstractApiHandler {
 		return self::processResponse($response);	
 	}
 
-	public static function deleteUserEmail($params = null, $apiAuth = null) {
+	public static function deleteUserEmail($id, $params = null, $apiAuth = null) {
+		$params['id'] = $id;
 		$class = self::className();
 		$instance = new $class($params);
 		if (!$instance->emailId) {
@@ -106,11 +116,8 @@ class User extends AbstractApiHandler {
 		return self::processResponse($response);
 	}
 
-	public static function getUsers($params = null, $apiAuth = null) {
-		return self::getCall('users', $params, $apiAuth);
-	}
-
-	public static function getFinancialSummaries($params = null, $apiAuth = null) {
+	public static function getFinancialSummaries($id, $params = null, $apiAuth = null) {
+		$params['id'] = $id;
 		$class = self::className();
 		$instance = new $class($params);
 		$url = $instance->getInstanceUrl(). '/financialSummaries';
@@ -119,7 +126,8 @@ class User extends AbstractApiHandler {
 		return self::processResponse($response);
 	}
 
-	public static function getItemInstances($params = null, $apiAuth = null) {
+	public static function findItemInstances($id, $params = null, $apiAuth = null) {
+		$params['id'] = $id;
 		$class = self::className();
 		$instance = new $class($params);
 		$url = $instance->getInstanceUrl(). '/itemInstances';
@@ -128,7 +136,8 @@ class User extends AbstractApiHandler {
 		return self::processResponse($response);
 	}
 
-	public static function getRecommendations($params = null, $apiAuth = null) {
+	public static function findRecommendations($id, $params = null, $apiAuth = null) {
+		$params['id'] = $id;
 		$class = self::className();
 		$instance = new $class($params);
 		$url = $instance->getInstanceUrl(). '/recommendations';
@@ -137,7 +146,8 @@ class User extends AbstractApiHandler {
 		return self::processResponse($response);	
 	}
 
-	public static function getRestrictions($params = null, $apiAuth = null) {
+	public static function getRestrictions($id, $params = null, $apiAuth = null) {
+		$params['id'] = $id;
 		$class = self::className();
 		$instance = new $class($params);
 		$url = $instance->getInstanceUrl(). '/restrictions';
@@ -146,11 +156,13 @@ class User extends AbstractApiHandler {
 		return self::processResponse($response);	
 	}
 
-	public static function createSecureKey($params = null, $apiAuth = null) {
+	public static function createSecureKey($id, $params = null, $apiAuth = null) {
+		$params['userId'] = $id;
 		return self::postCall('user/secureKey', $params, $apiAuth);
 	}
 
-	public static function blockUser($params = null, $apiAuth = null) {
+	public static function blockUser($id, $params = null, $apiAuth = null) {
+		$params['id'] = $id;
 		$class = self::className();
 		$instance = new $class($params);
 		$url = $instance->getInstanceUrl(). '/block';
@@ -159,7 +171,8 @@ class User extends AbstractApiHandler {
 		return self::processResponse($response);	
 	}
 
-	public static function getBlock($params = null, $apiAuth = null) {
+	public static function getBlock($id, $params = null, $apiAuth = null) {
+		$params['id'] = $id;
 		$class = self::className();
 		$instance = new $class($params);
 		$url = $instance->getInstanceUrl(). '/block';
@@ -168,7 +181,8 @@ class User extends AbstractApiHandler {
 		return self::processResponse($response);	
 	}
 
-	public static function unblockUser($params = null, $apiAuth = null) {
+	public static function unblockUser($id, $params = null, $apiAuth = null) {
+		$params['id'] = $id;
 		$class = self::className();
 		$instance = new $class($params);
 		$url = $instance->getInstanceUrl(). '/block';
@@ -177,7 +191,8 @@ class User extends AbstractApiHandler {
 		return self::processResponse($response);	
 	}
 
-	public static function setUserLoginTimeById($params = null, $apiAuth = null) {
+	public static function setUserLoginTimeById($id, $params = null, $apiAuth = null) {
+		$params['id'] = $id;
 		$class = self::className();
 		$instance = new $class($params);
 		$url = $instance->getInstanceUrl(). '/login';
@@ -186,8 +201,8 @@ class User extends AbstractApiHandler {
 		return self::processResponse($response);	
 	}
 
-	public static function setUserLoginTimeByExternalKey($params = null, $apiAuth = null) {
-		$base = self::name();
+	public static function setUserLoginTimeByExternalKey($id, $params = null, $apiAuth = null) {
+		$params['externalKey'] = $id;
 		return self::postCall('user/login', $params, $apiAuth);	
 	}
 }
