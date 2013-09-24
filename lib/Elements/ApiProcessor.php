@@ -123,9 +123,10 @@ class ApiProcessor  {
 		$url = self::apiUrl($url);
 		if ($method == 'get') {
 			$options[CURLOPT_HTTPGET] = 1;
+			$url .="?$authStr";
 			if (count($params) > 0) {
 				$encoded = self::encode($params);
-				$url = "$url?$authStr&$encoded";
+				$url = "$url&$encoded";
 			}
 		} elseif ($method == 'put') {
 			$params = array_merge($auth, $params);
@@ -141,7 +142,6 @@ class ApiProcessor  {
 				$encoded = self::encode($params);
 				$url = "$url?$authStr&$encoded";
 			}
-
 		} else {
 			throw new ElementsException('Unrecognized method %method');
 		}
