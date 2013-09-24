@@ -9,9 +9,9 @@ class Item extends AbstractApiHandler {
 		return self::retrieveCall($params, $apiAuth);
 	}
 
-	public static function findItemByExternalId($id, $params = null, $apiAuth = null) {
-		$params['id'] = $id;
-		return self::getCall($params, $apiAuth);
+	public static function findItemByExternalKey($id, $params = null, $apiAuth = null) {
+		$params['externalKey'] = $id;
+		return self::getCall(self::name(), $params, $apiAuth);
 	}
 
 	public static function addItem($params = null, $apiAuth = null) {

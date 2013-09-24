@@ -13,24 +13,25 @@ class User extends AbstractApiHandler {
 		return self::retrieveCall($params, $apiAuth);
 	}
 
-	public static function findUserByExternalKey($params = null, $apiAuth = null) {
+	public static function findUserByExternalKey($id, $params = null, $apiAuth = null) {
 		$base = self::name();
+		$params['externalKey'] = $id;
 		return self::getCall($base, $params, $apiAuth);
 	}
 
-	public static function updateUserById($params = null, $apiAuth = null) {
-		$class = self::className();
-		$instance = new $class($params);
-		$url = $instance->getInstanceUrl();
-		$processor = new ApiProcessor($apiAuth);
-		list($response, $code) = $processor->request('put', $url, $params); 
-		return self::processResponse($response);
+	public static function updateUserById($id, $params = null, $apiAuth = null) {
+		$parmas['id'] = $id;
+		
+		// $instance = new $class($params);
+		// $url = $instance->getInstanceUrl();
+		// $processor = new ApiProcessor($apiAuth);
+		// list($response, $code) = $processor->request('put', $url, $params); 
+		// return self::processResponse($response);
 	}
 
-	public static function updateUserByExternalKey($params = null, $apiAuth = null) {
-		$class = self::className();
-		$instance = new $class($params);
-		$url = $instance->getInstanceUrl();
+	public static function updateUserByExternalKey($id, $params = null, $apiAuth = null) {
+		$params['externalKey'] = $id;
+		$url = self::getBaseUrl(self::name());
 		$processor = new ApiProcessor($apiAuth);
 		list($response, $code) = $processor->request('put', $url, $params); 
 		return self::processResponse($response);

@@ -31,7 +31,8 @@ class ItemInstance extends AbstractApiHandler {
 		return self::getCall('shippingReport', $params, $apiAuth);
 	}
 
-	public static function startItemInstanceExpiration($params = null, $apiAuth = null) {
+	public static function startItemInstanceExpiration($id, $params = null, $apiAuth = null) {
+		$params['id'] = $id;
 		$class = self::className();
 		$instance = new $class($params);
 		$url = $instance->getInstanceUrl(). '/startExpiration';

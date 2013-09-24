@@ -6,6 +6,8 @@ namespace Elements\Util;
 class Object implements \Countable, \Iterator, \ArrayAccess
 {
 
+	protected $idField = 'id';
+
 	protected $count;
 
 	protected $data = array();
@@ -14,7 +16,7 @@ class Object implements \Countable, \Iterator, \ArrayAccess
 
 	public function __construct($array = array()) {
 		if (isset($array) && !is_array($array)) {
-			$array = array('id' => $array);
+			$array = array($this->idField => $array);
 		}
 
 		if (!empty($array)) {
@@ -83,6 +85,10 @@ class Object implements \Countable, \Iterator, \ArrayAccess
 			}
 		}
 		$this->data = $array;
+	}
+
+	public function setIdField($field) {
+		$this->idField = $field;
 	}
 
 	private function processArray($data, $array = array()) {

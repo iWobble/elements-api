@@ -21,7 +21,7 @@ abstract class AbstractApiHandler extends Util\Object{
 	}
 
 	public function getInstanceUrl($base = null) {
-		$id = $this->id;
+		$id = $this->{$this->idField};
 		if (!$id) {
 			throw new ElementsException(sprintf('Could not create URL for %s. No ID found for object', get_class($this)));
 		}
@@ -41,7 +41,15 @@ abstract class AbstractApiHandler extends Util\Object{
 
 	protected function processResponse($response) {
 		try {
-			return Util\Xml::toArray(Util\Xml::build($response));
+			// Some Response are empty. Create Empty XML for those times
+			if (!$response) {
+				$response = "<empty/>";
+			}
+			$xmlArray = Util\Xml::toArray(Util\Xml::build($response));
+			if (!empty($xmlArray['error'])) {
+				throw new ElementsException($xmlArray['error']['message'], $xmlArray['error']['code']);
+			}
+			return $xmlArray;
 		} catch (\Elements\Util\XmlException $e) {
 			throw new ElementsException($e->getMessage());
 		}

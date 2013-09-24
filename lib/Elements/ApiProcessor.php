@@ -57,9 +57,8 @@ class ApiProcessor  {
 
 	private function _requestRaw($method, $url, $params) {
 		if (!is_array($params)) {
-			$params = array($params);
+			$params = array();
 		}
-
 		$headers = array();
 		if (isset($this->options['partnerId'])) {
 			$partnerId = $this->options['partnerId'];
@@ -101,72 +100,78 @@ class ApiProcessor  {
 			throw new ElementsException('Need accessKey or signature for authentication');
 		}
 
-		$params['auth.partnerId'] = $partnerId;
-		$params['auth.appFamilyId'] = $appFamilyId;
+		$auth['auth.partnerId'] = $partnerId;
+		$auth['auth.appFamilyId'] = $appFamilyId;
 		if ($signature !== false) {
-			$params['auth.signature'] = $signature;
+			$auth['auth.signature'] = $signature;
 		} else {
-			$params['auth.accessKey'] = $accessKey;
+			$auth['auth.accessKey'] = $accessKey;
 		}
 
-		list($response, $code) = $this->_curlRequest($method, $url, $headers, $params);
+		list($response, $code) = $this->_curlRequest($method, $url, $headers, $params, $auth);
 		return array($response, $code);
 	}
 
-	private function _curlRequest($method, $url, $headers, $params) {
+	private function _curlRequest($method, $url, $headers, $params, $auth) {
 		$curl = curl_init();
 		$method = strtolower($method);
 		$options = array();
 
+		$authStr = self::encode($auth);
+
+		#$url = self::apiUrl($url)."?$authStr";
 		$url = self::apiUrl($url);
 		if ($method == 'get') {
 			$options[CURLOPT_HTTPGET] = 1;
 			if (count($params) > 0) {
 				$encoded = self::encode($params);
-				$url = "$url?$encoded";
+				$url = "$url?$authStr&$encoded";
 			}
-		} elseif ($method == 'post' || $method == 'put') {
+		} elseif ($method == 'put') {
+			$params = array_merge($auth, $params);
+			$options[CURLOPT_CUSTOMREQUEST] = 'PUT';
+			$options[CURLOPT_POSTFIELDS] = self::encode($params);
+		} elseif ($method == 'post') {
+			$params = array_merge($auth, $params);
 			$options[CURLOPT_POST] = 1;
 			$options[CURLOPT_POSTFIELDS] = self::encode($params);
 		} elseif ($method == 'delete') {
 			$options[CURLOPT_CUSTOMREQUEST] = 'DELETE';
 			if (count($params) > 0) {
 				$encoded = self::encode($params);
-				$url = "$url?$encoded";
+				$url = "$url?$authStr&$encoded";
 			}
 
 		} else {
 			throw new ElementsException('Unrecognized method %method');
 		}
 
-		$opts[CURLOPT_URL] = $url;
-    	$opts[CURLOPT_RETURNTRANSFER] = true;
-    	$opts[CURLOPT_CONNECTTIMEOUT] = 30;
-    	$opts[CURLOPT_TIMEOUT] = 80;
-    	$opts[CURLOPT_RETURNTRANSFER] = true;
-    	$opts[CURLOPT_HTTPHEADER] = $headers;
+		$options[CURLOPT_URL] = $url;
+    	$options[CURLOPT_RETURNTRANSFER] = true;
+    	$options[CURLOPT_CONNECTTIMEOUT] = 30;
+    	$options[CURLOPT_TIMEOUT] = 80;
+    	$options[CURLOPT_RETURNTRANSFER] = true;
+    	$options[CURLOPT_HTTPHEADER] = $headers;
     	#if (!Stripe::$verifySslCerts)
-      		$opts[CURLOPT_SSL_VERIFYPEER] = false;
+      		$options[CURLOPT_SSL_VERIFYPEER] = false;
 		#}
 
-      	curl_setopt_array($curl, $opts);
+      	curl_setopt_array($curl, $options);
     	$content = curl_exec($curl);
 
-        if ($content == false) {
+		$code = curl_getinfo($curl, CURLINFO_HTTP_CODE);
+        if ($code !== 200 && $content == false) {
  			$errno = curl_errno($curl);
  			$message = curl_error($curl);
  			curl_close($curl);
- 			$this->handleCurlError($errno, $message);
-        }
+ 			$this->handleCurlError($errno, $message, $code);
+        } 
 
-
-
-        $code = curl_getinfo($curl, CURLINFO_HTTP_CODE);
     	curl_close($curl);
 		return array($content, $code);
 	}
 
-	public function handleCurlError($errno, $message) {
+	public function handleCurlError($errno, $message, $code) {
 		switch ($errno) {
 			case CURLE_COULDNT_CONNECT:
 			case CURLE_COULDNT_RESOLVE_HOST:
@@ -182,7 +187,7 @@ class ApiProcessor  {
 		}
 
 		$message .= "\n\nNetwork Error [errno: $errno]: $message";
-		throw new ElementsException($message);
+		throw new ElementsException($message, $code);
 	}
 }
 
