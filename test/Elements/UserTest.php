@@ -2,11 +2,14 @@
 
 class UserTest extends ElementsTest {
 
-    public function testList() {
-                
+	
+
+    public function testListUsers() {
+	$response = Elements\User::getUsers();
+	$this->assertTrue(isset($response['users']));
     }
 
-    public function testCreate() {
-        return false;
+    public function testCreateUser() {
+	Elememnts\User::addUser(
     }
 }

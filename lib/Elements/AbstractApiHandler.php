@@ -4,8 +4,6 @@ namespace Elements;
 
 abstract class AbstractApiHandler extends Util\Object{
 
-
-
 	public static function name($class = null) {
 		if (!$class) {
 			$class = self::className();
@@ -39,7 +37,7 @@ abstract class AbstractApiHandler extends Util\Object{
 		return lcfirst($base);
 	}
 
-	protected function processResponse($response) {
+	protected static function processResponse($response) {
 		try {
 			// Some Response are empty. Create Empty XML for those times
 			if (!$response) {
@@ -64,7 +62,7 @@ abstract class AbstractApiHandler extends Util\Object{
 		}
 	}
 
-	protected function retrieveCall($params, $apiAuth = null) {
+	protected static function retrieveCall($params, $apiAuth = null) {
 		$class = self::className();
 		$instance = new $class($params);
 		$url = $instance->getInstanceUrl();
@@ -73,7 +71,7 @@ abstract class AbstractApiHandler extends Util\Object{
 		return self::processResponse($response);
 	}
 
-	protected function postCall($class, $params = null, $apiAuth = null) {
+	protected static function postCall($class, $params = null, $apiAuth = null) {
 		self::validate('post', $params, $apiAuth);
 		$processor = new ApiProcessor($apiAuth);
 		$url = self::getBaseUrl($class);
@@ -81,7 +79,7 @@ abstract class AbstractApiHandler extends Util\Object{
 		return self::processResponse($response);
 	}
 
-	protected function getCall($class, $params = null, $apiAuth = null) {
+	protected static function getCall($class, $params = null, $apiAuth = null) {
 		self::validate('get', $params, $apiAuth);
 		$processor = new ApiProcessor($apiAuth);
 		$url = self::getBaseUrl($class);
@@ -89,7 +87,7 @@ abstract class AbstractApiHandler extends Util\Object{
 		return self::processResponse($response);
 	}
 
-	protected function deleteCall($class, $params = null, $apiAuth = null) {
+	protected static function deleteCall($class, $params = null, $apiAuth = null) {
 		self::validate('delete', $params, $apiAuth);
 		$processor = new ApiProcessor($apiAuth);
 		$url = self::getBaseUrl($class);
@@ -97,7 +95,7 @@ abstract class AbstractApiHandler extends Util\Object{
 		return self::processResponse($response);
 	}
 
-	protected function putCall($class, $params = null, $apiAuth = null) {
+	protected static function putCall($class, $params = null, $apiAuth = null) {
 		self::validate('put', $params, $apiAuth);
 		$class = self::className();
 		$instance = new $class($params);
@@ -106,7 +104,4 @@ abstract class AbstractApiHandler extends Util\Object{
 		list($response, $code) = $processor->request('put', $url, $params); 
 		return self::processResponse($response);	
 	}
-
-
-
 }
