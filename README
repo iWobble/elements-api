@@ -1,1 +1,36 @@
 Elements API 
+
+
+Installation
+
+Option the lastest version of Elements PHP bindings with:
+
+<pre>
+git clone http://git.livegamer.com/jared/elements-api.git
+</pre>
+
+To get started, add the following to your PHP script:
+
+<pre>
+require_once('/path/to/elements-api/lib/Elements.php');
+</pre>
+
+Simple usage looks like:
+
+<pre>
+Elements::setBaseUrl('https://delldev.tfelements.com');
+Elements::setPartnerId('$apiactor');
+Elements::setAppFamilyId('1379720147766');
+Elements::setAccessKey('HPPhSwLraz');
+
+$customer = \Elements\User::findUserById($user_id);
+
+</pre>
+
+Tests
+In order to run tests you have to install SimpleTest.
+
+Run test suite:
+<pre>
+php ./test/tests.php
+</pre>
