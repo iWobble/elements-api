@@ -18,10 +18,10 @@ require_once('/path/to/elements-api/lib/Elements.php');
 Simple usage looks like:
 
 <pre>
-Elements::setBaseUrl('https://delldev.tfelements.com');
-Elements::setPartnerId('$apiactor');
-Elements::setAppFamilyId('1379720147766');
-Elements::setAccessKey('HPPhSwLraz');
+Elements::setBaseUrl('https://url.to.elements');
+Elements::setPartnerId('$partnerId');
+Elements::setAppFamilyId('1111111111');
+Elements::setAccessKey('AccessKey');
 
 $customer = \Elements\User::findUserById($user_id);
 
