@@ -7,6 +7,7 @@ class Store extends AbstractApiHandler {
 	public static function findGoodsForStore($params = null, $apiAuth = null) {
 		$class = self::className();
 		$instance = new $class($params);
+		$instance->setIdField('storeId');
 		$url = $instance->getInstanceUrl(). '/goods';
 		$processor = new ApiProcessor($apiAuth);
 		list($response, $code) = $processor->request('get', $url, $params); 
