@@ -60,6 +60,11 @@ class ApiProcessor  {
 			$params = array();
 		}
 		$headers = array();
+		
+		if (isset($params['headers']) && is_array($params['headers'])) {
+			$headers = $params['headers'];
+		}
+
 		if (isset($this->options['partnerId'])) {
 			$partnerId = $this->options['partnerId'];
 		} else {
