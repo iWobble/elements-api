@@ -1,9 +1,7 @@
-#H1
-Elements API 
+## Elements API ##
 
 
-#H2
-Installation
+## Installation ##
 
 Option the lastest version of Elements PHP bindings with:
 
@@ -29,7 +27,7 @@ $customer = \Elements\User::findUserById($user_id);
 
 ```
 
-Tests
+## Tests ##
 In order to run tests you have to install SimpleTest.
 
 Run test suite:
