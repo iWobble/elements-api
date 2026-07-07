@@ -13,7 +13,7 @@
     }
   ],
   "require": {
-    "php": ">=5.3.1",
+    "php": "8.5.8",
     "ext-curl": "*"
   },
   "autoload": {
